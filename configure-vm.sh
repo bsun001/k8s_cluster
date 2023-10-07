@@ -63,6 +63,15 @@ yum -y remove podman-docker runc
 yum install -y kubelet-1.25.0 kubeadm-1.25.0 kubectl-1.25.0 --disableexcludes=kubernetes
 yum install -y docker-ce docker-ce-cli containerd.io
 
+## Configure containerd
+containerd config default > /etc/containerd/config.toml
+
+sed -i -e "s|disabled_plugins|#disabled_plugins|g" /etc/containerd/config.toml
+
+sed -i -e "s|registry.k8s.io/pause:3.6|registry.aliyuncs.com/google_containers/pause:3.9|g" /etc/containerd/config.toml
+
+systemctl restart containerd
+
 ## Start and enable docker, kubelet service
 
 systemctl restart docker && systemctl enable docker
